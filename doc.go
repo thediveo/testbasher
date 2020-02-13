@@ -6,6 +6,8 @@ where only one or few short and simple auxiliary scripts are required per
 specific test and it's best to keep them near the test case itself to keep
 scripts and test in sync.
 
+This package defines only these two elements: Basher and TestCommand.
+
 Basher
 
 Basher handles auxiliary test harness scripts as integral parts of your unit

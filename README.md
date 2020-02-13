@@ -11,21 +11,33 @@ one or few short and simple test scripts are required per specific test and
 it's best to keep them near the test case itself to keep scripts and test in
 sync.
 
-A test starts a script and then interacts with it: the script may report
-information about things it set up dynamically, such as the IDs of Linux
-kernel namespaces, et cetera. And the script may wait for the test to step it
-through multiple phases (or steps) in order to complete the specific test.
-
-An example is [lxkns](https://github.com/TheDiveO/lxkns) where transient
-namespaces get created, but the processes keeping them alive must not
-terminate before the test has reached a certain phase in its course.
+A test starts a (BASHer) script and then interacts with it: the script may
+report information about things it set up dynamically, such as the IDs of
+Linux kernel namespaces, et cetera, which the test needs to read in order to
+test dynamic assumptions. And the script in turn may wait for the test to step
+it through multiple phases in order to complete a specific test. An example is
+[lxkns](https://github.com/TheDiveO/lxkns) where transient namespaces get
+created, but the processes keeping them alive must not terminate before the
+test has reached a certain phase in its course.
 
 Please refer to the [![GoDoc](https://godoc.org/github.com/TheDiveO/testbasher?status.svg)](http://godoc.org/github.com/TheDiveO/testbasher) for details.
 
 ## Usage
 
-```go
+The basic usage pattern is as follows:
 
+- create a `b := Basher{}`, and don't forget to `defer b.Done()`.
+- if required, add common BASH code using `b.Common("...script code...")` to
+  be reused in your scripts.
+- add one or more BASH scripts using `b.Script("name", "...script code...")`.
+- start your entry point script with `c := b.Start("name")`, and `defer
+  c.Close()`.
+- read data output from your script: `c.Decode(&data)`.
+- in case of multiple phases, step forward by calling `c.Proceed()`.
+
+And now for some code to further illustrate the above usage pattern list:
+
+```go
 func example() {
     scripts := Basher{}
     defer scripts.Done()

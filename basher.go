@@ -51,7 +51,8 @@ var allowednamechars = regexp.MustCompile("[^A-Za-z0-9_]+")
 //
 // For example, script "a.sh" wants to call script "b.sh", so it needs to
 // substitute "b.sh" by $b (or ${b}):
-//   $b arg1 arg2 etc
+//   # script "a"
+//   $b arg1 arg2 etc # call script "b"
 //
 // Invalid characters in shell script names, such as "-", will be replaced by
 // "_" in the name of the corresponding environment variable.
@@ -95,14 +96,14 @@ func (b *Basher) Start(name string, args ...string) *TestCommand {
 // variable "$foo" pointing to its temporary location. A script "foo-bar" has
 // the associated environment variable "$foo_bar".
 func (b *Basher) Script(name, script string) {
-	b.init()
+	b.init("")
 	b.addScript(name, script, false)
 }
 
 // Common adds an unnamed script with common definitions, which are then
 // automatically made available to all (non-common) scripts.
 func (b *Basher) Common(script string) {
-	b.init()
+	b.init("")
 	b.addScript(fmt.Sprintf("common%d", rand.Int()), script, true)
 }
 
@@ -171,7 +172,7 @@ func (b *Basher) addScript(name, script string, common bool) {
 
 // init initializes a Basher if it hasn't been initialized so far. Thus, init
 // can be called multiple times without causing damage.
-func (b *Basher) init() {
+func (b *Basher) init(tmp string) {
 	if b.tmpdir != "" {
 		return // already initialized, so we're done already.
 	}
@@ -182,7 +183,7 @@ func (b *Basher) init() {
 	prefix := fmt.Sprintf("%s-line-%d-",
 		strings.TrimSuffix(path.Base(currenttest.FileName), ".go"),
 		currenttest.LineNumber)
-	tmpdir, err := ioutil.TempDir("", prefix)
+	tmpdir, err := ioutil.TempDir(tmp, prefix)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -75,4 +75,9 @@ var _ = Describe("Basher", func() {
 		Expect(func() { b.Start("foo") }).To(Panic())
 	})
 
+	It("panics when the filesystem goes wrong", func() {
+		b := Basher{}
+		Expect(func() { b.init("/nowhere") }).To(Panic())
+	})
+
 })
