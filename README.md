@@ -1,8 +1,8 @@
 # Test BASHer
 
-[![GoDoc](https://godoc.org/github.com/TheDiveO/testbasher?status.svg)](http://godoc.org/github.com/TheDiveO/testbasher)
+[![GoDoc](https://godoc.org/github.com/thediveo/testbasher?status.svg)](http://godoc.org/github.com/thediveo/testbasher)
 [![GitHub](https://img.shields.io/github/license/thediveo/testbasher)](https://img.shields.io/github/license/thediveo/testbasher)
-![build and test](https://github.com/TheDiveO/testbasher/workflows/build%20and%20test/badge.svg?branch=master)
+![build and test](https://github.com/thediveo/testbasher/workflows/build%20and%20test/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/testbasher)](https://goreportcard.com/report/github.com/thediveo/testbasher)
 
 "Test BASHer" is a painfully simple bash script management and execution for
@@ -16,11 +16,11 @@ report information about things it set up dynamically, such as the IDs of
 Linux kernel namespaces, et cetera, which the test needs to read in order to
 test dynamic assumptions. And the script in turn may wait for the test to step
 it through multiple phases in order to complete a specific test. An example is
-[lxkns](https://github.com/TheDiveO/lxkns) where transient namespaces get
+[lxkns](https://github.com/thediveo/lxkns) where transient namespaces get
 created, but the processes keeping them alive must not terminate before the
 test has reached a certain phase in its course.
 
-Please refer to the [![GoDoc](https://godoc.org/github.com/TheDiveO/testbasher?status.svg)](http://godoc.org/github.com/TheDiveO/testbasher) for details.
+Please refer to the [![GoDoc](https://godoc.org/github.com/thediveo/testbasher?status.svg)](http://godoc.org/github.com/thediveo/testbasher) for details.
 
 ## Usage
 
