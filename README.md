@@ -20,7 +20,7 @@ it through multiple phases in order to complete a specific test. An example is
 created, but the processes keeping them alive must not terminate before the
 test has reached a certain phase in its course.
 
-Please refer to the [![GoDoc](https://godoc.org/github.com/thediveo/testbasher?status.svg)](http://godoc.org/github.com/thediveo/testbasher) for details.
+Please refer to the [![PkgGoDev](https://pkg.go.dev/badge/github.com/thediveo/testbasher)](https://pkg.go.dev/github.com/thediveo/testbasher) for details.
 
 ## Usage
 
