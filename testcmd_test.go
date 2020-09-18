@@ -36,13 +36,6 @@ var _ = Describe("TestCommand", func() {
 		c.Close()
 	})
 
-	It("panics on undecodable test command output with helpful details", func() {
-		c := NewTestCommand("/bin/bash", "-c", `echo \"foo && read`)
-		var s string
-		Expect(func() { c.Decode(&s) }).To(PanicWith(MatchError(
-			"invalid character '\\n' in string literal\nwhile reading:\n\t\"foo►\n◄")))
-	})
-
 	It("ex-terminates a blocking test command", func() {
 		c := NewTestCommand("/bin/sleep", "10000001")
 		done := make(chan interface{})

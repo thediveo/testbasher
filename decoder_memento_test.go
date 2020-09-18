@@ -12,6 +12,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+// +build go1.14
+
 package testbasher
 
 import (
@@ -21,16 +23,19 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Decoder", func() {
+var _ = Describe("memento Decoder", func() {
 
-	It("decodes", func() {
-		d := NewDecoder(strings.NewReader("42\n\"abc\""))
+	It("gives useful error messages", func() {
+		d := NewDecoder(strings.NewReader("42\n{\"foo\":\"bar\", foobar}"))
 		var i int
 		Expect(d.Decode(&i)).NotTo(HaveOccurred())
 		Expect(i).To(Equal(42))
 		var s string
-		Expect(d.Decode(&s)).NotTo(HaveOccurred())
-		Expect(s).To(Equal("abc"))
+		Expect(d.Decode(&s)).To(MatchError(MatchRegexp(
+			`invalid character 'f' looking for beginning .+
+while reading:
+\t
+{"foo":"bar", ►f◄oobar}`)))
 	})
 
 })
