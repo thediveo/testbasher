@@ -1,6 +1,6 @@
 # Test BASHer
 
-[![GoDoc](https://godoc.org/github.com/thediveo/testbasher?status.svg)](http://godoc.org/github.com/thediveo/testbasher)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/thediveo/testbasher)](https://pkg.go.dev/github.com/thediveo/testbasher)
 [![GitHub](https://img.shields.io/github/license/thediveo/testbasher)](https://img.shields.io/github/license/thediveo/testbasher)
 ![build and test](https://github.com/thediveo/testbasher/workflows/build%20and%20test/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/testbasher)](https://goreportcard.com/report/github.com/thediveo/testbasher)
@@ -33,6 +33,10 @@ The basic usage pattern is as follows:
 - start your entry point script with `c := b.Start("name")`, and `defer
   c.Close()`.
 - read data output from your script: `c.Decode(&data)`.
+  - in case the expected data cannot be decoded, `c.Decode` panics with details
+    including the exact (JSON) data read from the script which could not be
+    decoded. No more stupid JSON "syntax errors at offset 666", but instead
+    you'll see the JSON data read up to the point where things went south.
 - in case of multiple phases, step forward by calling `c.Proceed()`.
 
 And now for some code to further illustrate the above usage pattern list:

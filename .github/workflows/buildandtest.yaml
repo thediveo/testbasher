@@ -7,8 +7,11 @@ on:
 jobs:
 
   buildandtest:
-    name: Build and Test
+    name: Build and Test on Go ${{matrix.go}}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.15', '1.14', '1.13']
     steps:
 
     - name: Set up Go 1.13

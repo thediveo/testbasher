@@ -15,7 +15,6 @@
 package testbasher
 
 import (
-	"encoding/json"
 	"io"
 	"os/exec"
 	"syscall"
@@ -32,7 +31,7 @@ type TestCommand struct {
 	cmd      *exec.Cmd      // the underlying OS command.
 	childout io.ReadCloser  // command's stdout stream.
 	childin  io.WriteCloser // command's stdin stream.
-	dec      *json.Decoder  // JSON decoder for deserializing the command's stdout stream.
+	dec      *Decoder       // (wrapped) JSON decoder for deserializing the command's stdout stream.
 }
 
 // NewTestCommand starts a command with arguments and then allows to read JSON
@@ -60,7 +59,7 @@ func NewTestCommand(command string, args ...string) *TestCommand {
 	cmd.childin = childin
 	// And finally get a JSON decoder for decoding the test commands output
 	// stream.
-	cmd.dec = json.NewDecoder(childout)
+	cmd.dec = NewDecoder(childout)
 	if err := cmd.cmd.Start(); err != nil {
 		panic(err.Error())
 	}
