@@ -33,10 +33,11 @@ The basic usage pattern is as follows:
 - start your entry point script with `c := b.Start("name")`, and `defer
   c.Close()`.
 - read data output from your script: `c.Decode(&data)`.
-  - in case the expected data cannot be decoded, `c.Decode` panics with details
-    including the exact (JSON) data read from the script which could not be
-    decoded. No more stupid JSON "syntax errors at offset 666", but instead
-    you'll see the JSON data read up to the point where things went south.
+  - Golang 1.14 and later: in case the expected data cannot be decoded,
+    `c.Decode` panics with details including the exact (JSON) data read from
+    the script which could not be decoded. No more stupid JSON "syntax errors
+    at offset 666", but instead you'll see the JSON data read up to the point
+    where things went south.
 - in case of multiple phases, step forward by calling `c.Proceed()`.
 
 And now for some code to further illustrate the above usage pattern list:

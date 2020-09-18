@@ -12,25 +12,25 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+// +build !go1.14
+
 package testbasher
 
 import (
-	"strings"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"encoding/json"
+	"io"
 )
 
-var _ = Describe("Decoder", func() {
+// Decoder just wraps a json.Decoder on Golang up to 1.13, without an input
+// data memento.
+type Decoder struct {
+	// wrapped JSON decoder
+	*json.Decoder
+}
 
-	It("decodes", func() {
-		d := NewDecoder(strings.NewReader("42\n\"abc\""))
-		var i int
-		Expect(d.Decode(&i)).NotTo(HaveOccurred())
-		Expect(i).To(Equal(42))
-		var s string
-		Expect(d.Decode(&s)).NotTo(HaveOccurred())
-		Expect(s).To(Equal("abc"))
-	})
-
-})
+// NewDecoder returns a new JSON decoder, reading from the specified reader.
+func NewDecoder(r io.Reader) *Decoder {
+	return &Decoder{
+		Decoder: json.NewDecoder(r),
+	}
+}

@@ -12,25 +12,21 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+// +build !go1.14
+
 package testbasher
 
 import (
-	"strings"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Decoder", func() {
+var _ = Describe("TestCommand without memento", func() {
 
-	It("decodes", func() {
-		d := NewDecoder(strings.NewReader("42\n\"abc\""))
-		var i int
-		Expect(d.Decode(&i)).NotTo(HaveOccurred())
-		Expect(i).To(Equal(42))
+	It("panics on undecodable test command output", func() {
+		c := NewTestCommand("/bin/bash", "-c", `echo \"foo && read`)
 		var s string
-		Expect(d.Decode(&s)).NotTo(HaveOccurred())
-		Expect(s).To(Equal("abc"))
+		Expect(func() { c.Decode(&s) }).To(Panic())
 	})
 
 })
