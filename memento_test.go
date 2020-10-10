@@ -24,23 +24,41 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+// This is going to be a "hardcore" test where we use a string reader that
+// never returns enough string even if it could, but at most a single rune.
+type ThickStringReader struct {
+	*strings.Reader
+}
+
+func NewReader(s string) *ThickStringReader {
+	return &ThickStringReader{strings.NewReader(s)}
+}
+
+func (r *ThickStringReader) Read(b []byte) (n int, err error) {
+	bminor := b[0:1]
+	return r.Reader.Read(bminor)
+}
+
 var _ = Describe("Memento", func() {
 
 	It("reads and remembers", func() {
-		m := NewMementoReader(strings.NewReader("1234567890"))
+		m := NewMementoReader(NewReader("1234567890"))
 		Expect(m).NotTo(BeNil())
 		Expect(m.Memento(100)).To(BeEmpty())
 
 		b := make([]byte, 1)
 		n, err := m.Read(b)
 		Expect(n).To(Equal(1))
-		Expect(err).NotTo(HaveOccurred())
+		Expect(err).To(Succeed())
 		Expect(m.Memento(100)).To(Equal([]byte("1")))
 
 		b = make([]byte, 4)
-		n, err = m.Read(b)
-		Expect(n).To(Equal(4))
-		Expect(err).NotTo(HaveOccurred())
+		for _, r := range "2345" {
+			n, err = m.Read(b)
+			Expect(n).To(Equal(1))
+			Expect(err).To(Succeed())
+			Expect(string(b[0])).To(Equal(string(r)))
+		}
 		Expect(m.Memento(100)).To(Equal([]byte("12345")))
 
 		m.Mark(3)
@@ -48,8 +66,17 @@ var _ = Describe("Memento", func() {
 
 		m.Mark(5)
 		b = make([]byte, 100)
-		n, err = m.Read(b)
-		Expect(n).To(Equal(5))
+		for _, r := range "67890x" {
+			n, err = m.Read(b)
+			if r == 'x' {
+				Expect(n).To(BeZero())
+				Expect(err).To(Equal(io.EOF))
+				break
+			}
+			Expect(n).To(Equal(1))
+			Expect(err).To(Succeed())
+			Expect(string(b[0])).To(Equal(string(r)))
+		}
 		Expect(m.Memento(100)).To(Equal([]byte("67890")))
 
 		m.Mark(10)

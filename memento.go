@@ -66,7 +66,7 @@ func (m *MementoReader) Read(p []byte) (n int, err error) {
 		}
 		// Whatever amount of data we could read, return it, updating our
 		// internal position, but still remembering all we've read so far.
-		copy(p, m.memento)
+		copy(p, m.memento[m.pos:])
 		m.pos += read
 		return read, err
 	}
