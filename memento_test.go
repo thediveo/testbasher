@@ -84,6 +84,11 @@ var _ = Describe("Memento", func() {
 		n, err = m.Read(b)
 		Expect(n).To(BeZero())
 		Expect(err).To(Equal(io.EOF))
+
+		b = make([]byte, 0)
+		n, err = m.Read(b)
+		Expect(n).To(BeZero())
+		Expect(err).To(Succeed())
 	})
 
 })
