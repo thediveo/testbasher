@@ -36,6 +36,16 @@ var _ = Describe("TestCommand", func() {
 		c.Close()
 	})
 
+	It("tells a test command", func() {
+		wisdom := "42"
+		c := NewTestCommand("/bin/bash", "-c", `read IN && echo "\"${IN}!\"" && read`)
+		c.Tell(wisdom)
+		var s string
+		c.Decode(&s)
+		Expect(s).To(Equal(wisdom + "!"))
+		c.Close()
+	})
+
 	It("ex-terminates a blocking test command", func() {
 		c := NewTestCommand("/bin/sleep", "10000001")
 		done := make(chan interface{})

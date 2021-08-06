@@ -99,3 +99,8 @@ func (cmd *TestCommand) Decode(v interface{}) {
 func (cmd *TestCommand) Proceed() {
 	_, _ = cmd.childin.Write([]byte{'\n'})
 }
+
+// Tell send the test command some text input, followed by ENTER.
+func (cmd *TestCommand) Tell(what string) {
+	_, _ = cmd.childin.Write(append([]byte(what), byte('\n')))
+}
