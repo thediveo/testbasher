@@ -24,7 +24,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo/v2"
 )
 
 // defsfilename is the filename of a script file containing definitions for
@@ -179,10 +179,10 @@ func (b *Basher) init(tmp string) {
 	// If this basher hasn't yet been initialized, we first create a temporary
 	// directory with a prefix containing the current test's source code
 	// filename (but without the ".go" file suffix) and a random suffix.
-	currenttest := ginkgo.CurrentGinkgoTestDescription()
+	currentSpecReport := ginkgo.CurrentSpecReport()
 	prefix := fmt.Sprintf("%s-line-%d-",
-		strings.TrimSuffix(path.Base(currenttest.FileName), ".go"),
-		currenttest.LineNumber)
+		strings.TrimSuffix(path.Base(currentSpecReport.FileName()), ".go"),
+		currentSpecReport.LineNumber())
 	tmpdir, err := ioutil.TempDir(tmp, prefix)
 	if err != nil {
 		panic(err.Error())

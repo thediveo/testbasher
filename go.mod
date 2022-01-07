@@ -1,9 +1,15 @@
 module github.com/thediveo/testbasher
 
-go 1.13
+go 1.17
 
 require (
-	github.com/onsi/ginkgo v1.16.4
-	github.com/onsi/gomega v1.15.0
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	github.com/onsi/ginkgo/v2 v2.0.0
+	github.com/onsi/gomega v1.17.0
+)
+
+require (
+	golang.org/x/net v0.0.0-20220105145211-5b0dc2dfae98 // indirect
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/text v0.3.7 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

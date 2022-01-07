@@ -1,5 +1,5 @@
 # Go versions to use when running containerized tests
-goversion = 1.13 1.15 1.16
+goversion = 1.17 1.16
 
 .PHONY: clean help test
 
