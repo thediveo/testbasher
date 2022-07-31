@@ -51,8 +51,9 @@ var allowednamechars = regexp.MustCompile("[^A-Za-z0-9_]+")
 //
 // For example, script "a.sh" wants to call script "b.sh", so it needs to
 // substitute "b.sh" by $b (or ${b}):
-//   # script "a"
-//   $b arg1 arg2 etc # call script "b"
+//
+//	# script "a"
+//	$b arg1 arg2 etc # call script "b"
 //
 // Invalid characters in shell script names, such as "-", will be replaced by
 // "_" in the name of the corresponding environment variable.
