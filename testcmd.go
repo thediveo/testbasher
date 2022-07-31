@@ -15,8 +15,10 @@
 package testbasher
 
 import (
+	"fmt"
 	"io"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -28,10 +30,11 @@ import (
 // transferred in multiple and separate JSON data elements, to allow for a
 // multi-stage test command (see also the Proceed method).
 type TestCommand struct {
-	cmd      *exec.Cmd      // the underlying OS command.
-	childout io.ReadCloser  // command's stdout stream.
-	childin  io.WriteCloser // command's stdin stream.
-	dec      *Decoder       // (wrapped) JSON decoder for deserializing the command's stdout stream.
+	cmd      *exec.Cmd       // the underlying OS command.
+	childout io.ReadCloser   // command's stdout stream.
+	childin  io.WriteCloser  // command's stdin stream.
+	childerr strings.Builder // any stderr output from the command.
+	dec      *Decoder        // (wrapped) JSON decoder for deserializing the command's stdout stream.
 }
 
 // NewTestCommand starts a command with arguments and then allows to read JSON
@@ -57,6 +60,7 @@ func NewTestCommand(command string, args ...string) *TestCommand {
 		panic(err.Error())
 	}
 	cmd.childin = childin
+	cmd.cmd.Stderr = &cmd.childerr
 	// And finally get a JSON decoder for decoding the test commands output
 	// stream.
 	cmd.dec = NewDecoder(childout)
@@ -89,7 +93,8 @@ func (cmd *TestCommand) Close() {
 func (cmd *TestCommand) Decode(v interface{}) {
 	err := cmd.dec.Decode(v)
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("TestCommand.Decode panicked: %s\nchild process stderr: %s",
+			err, cmd.childerr.String()))
 	}
 }
 

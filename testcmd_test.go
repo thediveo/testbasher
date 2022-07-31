@@ -60,4 +60,21 @@ var _ = Describe("TestCommand", func() {
 		}
 	})
 
+	It("returns the commands stderr when decoding fails", func() {
+		c := NewTestCommand("/bin/bash", "-c", `
+#!/bin/bash
+set -e
+echo '"42"'
+/grmpf
+`)
+		var s string
+		c.Decode(&s)
+		Expect(s).To(Equal("42"))
+		Expect(func() { c.Decode(&s) }).To(PanicWith(
+			MatchRegexp(`(?s)TestCommand\.Decode panicked: EOF
+while reading:.*
+.*
+child process stderr: /bin/bash: line 5: /grmpf: .*`)))
+	})
+
 })

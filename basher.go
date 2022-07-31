@@ -16,7 +16,6 @@ package testbasher
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path"
@@ -184,7 +183,7 @@ func (b *Basher) init(tmp string) {
 	prefix := fmt.Sprintf("%s-line-%d-",
 		strings.TrimSuffix(path.Base(currentSpecReport.FileName()), ".go"),
 		currentSpecReport.LineNumber())
-	tmpdir, err := ioutil.TempDir(tmp, prefix)
+	tmpdir, err := os.MkdirTemp(tmp, prefix)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -201,7 +200,7 @@ func (b *Basher) init(tmp string) {
 			b.defspath, err))
 	}
 	defer f.Close()
-	if _, err = f.WriteString(fmt.Sprintf("#!/bin/bash\n")); err != nil {
+	if _, err = f.WriteString("#!/bin/bash\n"); err != nil {
 		panic(fmt.Errorf(
 			"Basher: cannot write %q with common definitions, reason: %v",
 			b.defspath, err))
