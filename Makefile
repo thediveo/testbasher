@@ -1,19 +1,27 @@
-# Go versions to use when running containerized tests
-goversion = 1.17 1.16
+.PHONY: help chores clean coverage pkgsite report test vuln
 
-.PHONY: clean help test
+help: ## list available targets
+	@# Shamelessly stolen from Gomega's Makefile
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-help:
-	@echo "available targets: clean, test"
-
-clean:
+clean: ## cleans up build and testing artefacts
 	rm -f coverage.html coverage.out coverage.txt
 
-test:
-	@set -e; for GOVERSION in $(goversion); do \
-		echo "🧪 🧪 🧪 Testing on Go $${GOVERSION}"; \
-		docker build -t testbashertest:$${GOVERSION} --build-arg GOVERSION=$${GOVERSION} -f test/Dockerfile .;  \
-		docker run -it --rm --name testbashertest_$${GOVERSION} testbashertest:$${GOVERSION}; \
-	done; \
-	echo "🎉 🎉 🎉 All tests passed"
-	
+coverage: ## gathers coverage and updates README badge
+	@scripts/cov.sh
+
+pkgsite: ## serves Go documentation on port 6060
+	@echo "navigate to: http://localhost:6060/github.com/thediveo/testbasher"
+	@scripts/pkgsite.sh
+
+report: ## runs goreportcard on this module
+	@scripts/goreportcard.sh
+
+test: ## runs unit tests
+	go test -v -p=1 -count=1 -race ./...
+
+vuln: ## runs govulncheck
+	@scripts/vuln.sh
+
+chores: ## updates Go binaries and NPM helper packages if necessary
+	@scripts/chores.sh

@@ -37,25 +37,25 @@ const defsfilename = "basher-defs.sh"
 var allowednamechars = regexp.MustCompile("[^A-Za-z0-9_]+")
 
 // Basher manages (temporary) auxiliary scripts for setting up special
-// environments for individual test cases. Make sure to always call Done at
-// the end of a test case using Basher, preferably by immediately defer'ing
-// the Done call.
+// environments for individual test cases. Make sure to always call Done at the
+// end of a test case using Basher, preferably by immediately defer'ing the Done
+// call.
 //
-// Scripts are added to a Basher by calling the Script method, giving the
-// script a name and specifying the script itself. The script then gets
-// written to a temporary file in a temporary directory, created especially
-// for the test function which calls the Script method. When working with
-// multiple test scripts, these scripts must be referenced via automatically
-// injected environment variables named as the script (but without an ".sh"
-// suffix).
+// Scripts are added to a Basher by calling the Script method, giving the script
+// a name and specifying the script itself. The script then gets written to a
+// temporary file in a temporary directory, created especially for the test
+// function which calls the Script method. When working with multiple test
+// scripts, these scripts must be referenced via automatically injected
+// environment variables named as the script (but without an ".sh" suffix).
 //
-// For example, script "a.sh" wants to call script "b.sh", so it needs to
-// substitute "b.sh" by $b (or ${b}):
-//   # script "a"
-//   $b arg1 arg2 etc # call script "b"
+// For example, script “a.sh” wants to call script “b.sh”, so it needs to
+// substitute “b.sh” by “$b” (or “${b}”):
 //
-// Invalid characters in shell script names, such as "-", will be replaced by
-// "_" in the name of the corresponding environment variable.
+//	# script "a"
+//	$b arg1 arg2 etc # call script "b"
+//
+// Invalid characters in shell script names, such as “-”, will be replaced by
+// “_” in the name of the corresponding environment variable.
 type Basher struct {
 	tmpdir   string            // temporary directory receiving scripts.
 	defspath string            // path/filename to script with definitions, in temporary dir.
@@ -92,9 +92,9 @@ func (b *Basher) Start(name string, args ...string) *TestCommand {
 // be injected for sourcing a temporary file with script environment variables
 // referencing the correct temporary script file path and filenames.
 //
-// For example: script "foo" (or "foo.sh") will have an associated environment
-// variable "$foo" pointing to its temporary location. A script "foo-bar" has
-// the associated environment variable "$foo_bar".
+// For example: script “foo” (or “foo.sh”) will have an associated environment
+// variable “$foo” pointing to its temporary location. A script “foo-bar” has
+// the associated environment variable “$foo_bar”.
 func (b *Basher) Script(name, script string) {
 	b.init("")
 	b.addScript(name, script, false)

@@ -4,6 +4,7 @@
 [![GitHub](https://img.shields.io/github/license/thediveo/testbasher)](https://img.shields.io/github/license/thediveo/testbasher)
 ![build and test](https://github.com/thediveo/testbasher/workflows/build%20and%20test/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/testbasher)](https://goreportcard.com/report/github.com/thediveo/testbasher)
+![Coverage](https://img.shields.io/badge/Coverage-91.2%25-brightgreen)
 
 "Test BASHer" is a painfully simple bash script management and execution for
 simple unit test script harnesses. It is intended for such cases where only
@@ -82,5 +83,5 @@ read # wait for test to proceed()
 
 ## Copyright and License
 
-`testbasher` is Copyright 2020 Harald Albrecht, and licensed under the Apache
+`testbasher` is Copyright 2020-23 Harald Albrecht, and licensed under the Apache
 License, Version 2.0.
