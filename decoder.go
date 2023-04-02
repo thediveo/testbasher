@@ -23,7 +23,7 @@ import (
 
 // Decoder wraps a json.Decoder using a memento stream reader in order to
 // provide actually helpful error messages in case of JSON syntax errors,
-// detailing the concrete input stream data where the problem occured.
+// detailing the concrete input stream data where the problem occurred.
 type Decoder struct {
 	// wrapped JSON decoder
 	*json.Decoder

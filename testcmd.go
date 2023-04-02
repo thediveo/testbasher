@@ -19,6 +19,7 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -30,11 +31,12 @@ import (
 // transferred in multiple and separate JSON data elements, to allow for a
 // multi-stage test command (see also the Proceed method).
 type TestCommand struct {
-	cmd      *exec.Cmd       // the underlying OS command.
-	childout io.ReadCloser   // command's stdout stream.
-	childin  io.WriteCloser  // command's stdin stream.
-	childerr strings.Builder // any stderr output from the command.
-	dec      *Decoder        // (wrapped) JSON decoder for deserializing the command's stdout stream.
+	cmd       *exec.Cmd       // the underlying OS command.
+	childout  io.ReadCloser   // command's stdout stream.
+	childin   io.WriteCloser  // command's stdin stream.
+	childerr  strings.Builder // any stderr output from the command.
+	dec       *Decoder        // (wrapped) JSON decoder for deserializing the command's stdout stream.
+	closeonce sync.Once
 }
 
 // NewTestCommand starts a command with arguments and then allows to read JSON
@@ -70,22 +72,27 @@ func NewTestCommand(command string, args ...string) *TestCommand {
 	return cmd
 }
 
-// Close completes the command by sending it an ENTER input and then closing
-// the input pipe to the command. Then close waits at most 2s for the command
-// to finish its business. If the command passes the timeout, then it will be
+// Close completes the command by sending it an ENTER input and then closing the
+// input pipe to the command. Then close waits at most 2s for the command to
+// finish its business. If the command passes the timeout, then it will be
 // killed hard.
+//
+// This method does nothing if the test command has already been closed or is in
+// the process of being closed.
 func (cmd *TestCommand) Close() {
-	cmd.Proceed()
-	cmd.childin.Close()
-	cmd.childout.Close()
-	done := make(chan error)
-	go func() { done <- cmd.cmd.Wait() }()
-	select {
-	case <-time.After(2 * time.Second):
-		// And if thou'rt unwilling...
-		_ = cmd.cmd.Process.Kill()
-	case <-done:
-	}
+	cmd.closeonce.Do(func() {
+		cmd.Proceed()
+		cmd.childin.Close()
+		cmd.childout.Close()
+		done := make(chan error)
+		go func() { done <- cmd.cmd.Wait() }()
+		select {
+		case <-time.After(2 * time.Second):
+			// And if thou'rt unwilling...
+			_ = cmd.cmd.Process.Kill()
+		case <-done:
+		}
+	})
 }
 
 // Decode reads JSON from the test command's output and tries to decode it
@@ -93,6 +100,10 @@ func (cmd *TestCommand) Close() {
 func (cmd *TestCommand) Decode(v interface{}) {
 	err := cmd.dec.Decode(v)
 	if err != nil {
+		// avoid a race condition where the test script might still produce
+		// (error) output, so first shut it down properly before accessing the
+		// child's augmented error output.
+		cmd.Close()
 		panic(fmt.Sprintf("TestCommand.Decode panicked: %s\nchild process stderr: %s",
 			err, cmd.childerr.String()))
 	}
