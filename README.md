@@ -2,7 +2,7 @@
 
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/thediveo/testbasher)](https://pkg.go.dev/github.com/thediveo/testbasher)
 [![GitHub](https://img.shields.io/github/license/thediveo/testbasher)](https://img.shields.io/github/license/thediveo/testbasher)
-![build and test](https://github.com/thediveo/testbasher/workflows/build%20and%20test/badge.svg?branch=master)
+![build and test](https://github.com/thediveo/testbasher/actions/workflows/buildandtest.yaml/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/testbasher)](https://goreportcard.com/report/github.com/thediveo/testbasher)
 ![Coverage](https://img.shields.io/badge/Coverage-92.2%25-brightgreen)
 
@@ -81,7 +81,25 @@ read # wait for test to proceed()
 }
 ```
 
+## DevContainer
+
+> [!CAUTION]
+>
+> Do **not** use VSCode's "~~Dev Containers: Clone Repository in Container
+> Volume~~" command, as it is utterly broken by design, ignoring
+> `.devcontainer/devcontainer.json`.
+
+1. `git clone https://github.com/thediveo/enumflag`
+2. in VSCode: Ctrl+Shift+P, "Dev Containers: Open Workspace in Container..."
+3. select `enumflag.code-workspace` and off you go...
+
+## Supported Go Versions
+
+`native` supports versions of Go that are noted by the [Go release
+policy](https://golang.org/doc/devel/release.html#policy), that is, major
+versions _N_ and _N_-1 (where _N_ is the current major version).
+
 ## Copyright and License
 
-`testbasher` is Copyright 2020-23 Harald Albrecht, and licensed under the Apache
+`testbasher` is Copyright 2020-25 Harald Albrecht, and licensed under the Apache
 License, Version 2.0.
