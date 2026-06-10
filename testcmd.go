@@ -84,13 +84,13 @@ func (cmd *TestCommand) Close() {
 		cmd.Proceed()
 		_ = cmd.childin.Close()
 		_ = cmd.childout.Close()
-		done := make(chan error)
-		go func() { done <- cmd.cmd.Wait() }()
+		errch := make(chan error)
+		go func() { errch <- cmd.cmd.Wait() }()
 		select {
 		case <-time.After(2 * time.Second):
 			// And if thou'rt unwilling...
 			_ = cmd.cmd.Process.Kill()
-		case <-done:
+		case <-errch:
 		}
 	})
 }
