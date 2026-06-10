@@ -48,7 +48,7 @@ var _ = Describe("TestCommand", func() {
 
 	It("ex-terminates a blocking test command", func() {
 		c := NewTestCommand("/bin/sleep", "10000001")
-		done := make(chan interface{})
+		done := make(chan any)
 		go func() {
 			c.Close()
 			done <- nil

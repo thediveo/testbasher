@@ -4,7 +4,7 @@
 [![GitHub](https://img.shields.io/github/license/thediveo/testbasher)](https://img.shields.io/github/license/thediveo/testbasher)
 ![build and test](https://github.com/thediveo/testbasher/actions/workflows/buildandtest.yaml/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/testbasher)](https://goreportcard.com/report/github.com/thediveo/testbasher)
-![Coverage](https://img.shields.io/badge/Coverage-92.2%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-92.4%25-brightgreen)
 
 "Test BASHer" is a painfully simple bash script management and execution for
 simple unit test script harnesses. It is intended for such cases where only
@@ -89,9 +89,9 @@ read # wait for test to proceed()
 > Volume~~" command, as it is utterly broken by design, ignoring
 > `.devcontainer/devcontainer.json`.
 
-1. `git clone https://github.com/thediveo/enumflag`
+1. `git clone https://github.com/thediveo/testbasher`
 2. in VSCode: Ctrl+Shift+P, "Dev Containers: Open Workspace in Container..."
-3. select `enumflag.code-workspace` and off you go...
+3. select `testbasher.code-workspace` and off you go...
 
 ## Supported Go Versions
 
@@ -101,5 +101,5 @@ versions _N_ and _N_-1 (where _N_ is the current major version).
 
 ## Copyright and License
 
-`testbasher` is Copyright 2020-25 Harald Albrecht, and licensed under the Apache
+`testbasher` is Copyright 2020-26 Harald Albrecht, and licensed under the Apache
 License, Version 2.0.

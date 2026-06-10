@@ -82,8 +82,8 @@ func NewTestCommand(command string, args ...string) *TestCommand {
 func (cmd *TestCommand) Close() {
 	cmd.closeonce.Do(func() {
 		cmd.Proceed()
-		cmd.childin.Close()
-		cmd.childout.Close()
+		_ = cmd.childin.Close()
+		_ = cmd.childout.Close()
 		done := make(chan error)
 		go func() { done <- cmd.cmd.Wait() }()
 		select {
@@ -97,7 +97,7 @@ func (cmd *TestCommand) Close() {
 
 // Decode reads JSON from the test command's output and tries to decode it
 // into the data element specified.
-func (cmd *TestCommand) Decode(v interface{}) {
+func (cmd *TestCommand) Decode(v any) {
 	err := cmd.dec.Decode(v)
 	if err != nil {
 		// avoid a race condition where the test script might still produce
