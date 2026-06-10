@@ -48,8 +48,8 @@ func NewDecoder(r io.Reader) *Decoder {
 // json.SyntaxError object. Other errors get also wrapped with additional
 // details about the JSON input read up to now to provide a more meaningful
 // context.
-func (d *Decoder) Decode(v interface{}) error {
-	d.m.Mark(d.Decoder.InputOffset())
+func (d *Decoder) Decode(v any) error {
+	d.m.Mark(d.InputOffset())
 	err := d.Decoder.Decode(v)
 	if err == nil {
 		return nil
@@ -61,7 +61,7 @@ func (d *Decoder) Decode(v interface{}) error {
 		// position in the overall data stream it hit a major road block. Being nice
 		// (or not), the position is 1-based, so keep that in mind.
 		offset := int(jerr.Offset-d.m.markoffset) - 1
-		memento = string(d.m.Memento(d.Decoder.InputOffset() + int64(offset+100)))
+		memento = string(d.m.Memento(d.InputOffset() + int64(offset+100)))
 		// To provide better context, we then visibly mark the error position in
 		// the memento string. Of course, we need to take into account that
 		// we're dealing with UTF8 encoded Unicode strings, not wchars or
@@ -69,7 +69,7 @@ func (d *Decoder) Decode(v interface{}) error {
 		r, rlen := utf8.DecodeRuneInString(memento[offset:])
 		memento = fmt.Sprintf("%s►%c◄%s", memento[:offset], r, memento[offset+rlen:])
 	} else {
-		memento = string(d.m.Memento(d.Decoder.InputOffset() + 100))
+		memento = string(d.m.Memento(d.InputOffset() + 100))
 	}
 	return fmt.Errorf("%w\nwhile reading:\n\t%s", err, memento)
 }

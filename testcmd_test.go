@@ -17,6 +17,8 @@ package testbasher
 import (
 	"time"
 
+	"github.com/thediveo/testily/concur"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -48,11 +50,7 @@ var _ = Describe("TestCommand", func() {
 
 	It("ex-terminates a blocking test command", func() {
 		c := NewTestCommand("/bin/sleep", "10000001")
-		done := make(chan interface{})
-		go func() {
-			c.Close()
-			done <- nil
-		}()
+		done := concur.CloseWhenGone(func() { c.Close() })
 		select {
 		case <-time.After(5 * time.Second):
 			Fail("test command Close() not reacting within time limit")

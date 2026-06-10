@@ -128,15 +128,15 @@ func (b *Basher) addScript(name, script string, common bool) {
 			"Basher: cannot augment common definitions script %q, reason: %v",
 			b.defspath, err))
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	if !common {
-		if _, err := f.WriteString(fmt.Sprintf("%s=%q\n", envname, scriptpath)); err != nil {
+		if _, err := fmt.Fprintf(f, "%s=%q\n", envname, scriptpath); err != nil {
 			panic(fmt.Errorf(
 				"Basher: cannot augment common definitions script %q, reason: %v",
 				b.defspath, err))
 		}
 	} else {
-		if _, err := f.WriteString(fmt.Sprintf(". %q\n", scriptpath)); err != nil {
+		if _, err := fmt.Fprintf(f, ". %q\n", scriptpath); err != nil {
 			panic(fmt.Errorf(
 				"Basher: cannot augment common definitions script %q, reason: %v",
 				b.defspath, err))
@@ -153,7 +153,7 @@ func (b *Basher) addScript(name, script string, common bool) {
 			"Basher: cannot create temporary %q script as %q, reason: %v",
 			name, scriptpath, err))
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	header := "#!/bin/bash\n"
 	if !common {
 		header += ". " + b.defspath + "\n"
@@ -198,7 +198,7 @@ func (b *Basher) init(tmp string) {
 			"Basher: failed to create %q for common definitions, reason: %v",
 			b.defspath, err))
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	if _, err = f.WriteString("#!/bin/bash\n"); err != nil {
 		panic(fmt.Errorf(
 			"Basher: cannot write %q with common definitions, reason: %v",
